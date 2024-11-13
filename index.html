@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Zone : Home</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="initClock()">
+    <header>
+        <div class="container">BBC_2</div>
+        <div class="datetime">
+            <div class="date">
+                <span id="dayname">day</span>,
+                <span id="month">month</span>
+                <span id="dayno">00</span>,
+                <span id="year">year</span>
+            </div>
+            <div class="time">
+                <span id="hour">00</span> :
+                <span id="min">00</span> :
+                <span id="sec">00</span>
+                <span id="period">AM</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main">
+        <main>
+            <div class="up">
+                <h1>SKT_Ginigaththena</h1>
+                <h2>Kandy</h2>
+                <p>Centre No : 81 SKT_Ginigaththena</p>
+                <span id="No">
+                    <p>Chit No : <label id="ChitNo">-</label>&nbsp; || &nbsp; Race No : <label id="Race">-</label></p>
+                </span>
+            </div>
+            
+            <div class="bottom">
+                <div id="RaceBet">
+                    <form id="ID">
+                        <span>
+                            <label for="Chit">Chit Number</label>
+                            <input type="text" name="Chit" id="Chit" autocomplete="off">
+                        </span>
+
+                        <span>
+                            <label for="RaceID">Races to Bet</label>
+                            <input type="text" name="RaceID" id="RaceID" autocomplete="off">
+                        </span>
+                        <button type="button" onclick="addValue()" style="display: none;"></button>
+                    </form>
+                    <label>Default Chit Sheet</label>
+                    <div class="btn">
+                        <form id="but">
+                            <input type="number" name="cash" id="cash" placeholder="Amount" required>
+                            <button onclick="SingleChit()" type="button">Single 4Wela</button>
+                            <button onclick="AllChit()" style="margin-right: 0px;" type="button">All 5Wela</button>
+                        </form>
+                    </div>
+                </div>
+                <form id="manual">
+                    <div id="Bet">
+                        <label>Horse Number</label>
+                        <div class="horse">
+                            <input type="number" name="H1" id="Horse1" class="Horse" max="8" min="0" maxlength="1" autocomplete="off">
+                            -
+                            <input type="number" name="H2" id="Horse2" class="Horse" max="8" min="0" maxlength="1" autocomplete="off">
+                        </div>
+                        <Label for="Amount">Bet Amount</Label>
+                        <input type="number" name="Amount" id="Amount">
+                        <button type="button" onclick="addManual()" id="add">+ Add</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+        <section>
+            <div class="betting">
+                <table>
+                    <form action="" method="post" id="final">
+                        <tr class="heading">
+                            <th id="No">#</th>
+                            <th id="Horse">Horse 1 - Horse 2</th>
+                            <th id="Result">Result</th>
+                            <th id="Amount">Amount</th>
+                            <th id="action">Action</th>
+                        </tr>
+                        <tbody class="added" id="added"></tbody>
+                    </form>
+                </table>
+            </div>
+            <div class="print">
+                <h4 id="GrandTotal">Grand Total : Rs. 0.00</h4>
+                <div class="last">
+                    <button type="button" onclick="reset()" id="reset">
+                        <span class="material-symbols-outlined">restart_alt</span>
+                    </button>
+                    <button type="button" onclick="generateReceipt()" id="print">
+                        <span class="material-symbols-outlined">print</span> Print
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+
+<!-- Scripts -->
+<script src="script.js"></script>
+
+<script type="text/javascript">
+    function updateClock(){
+        var now = new Date();
+        var dname = now.getDay(),
+            mo = now.getMonth(),
+            dnum = now.getDate(),
+            yr = now.getFullYear(),
+            hou = now.getHours(),
+            min = now.getMinutes(),
+            sec = now.getSeconds(),
+            pe = "AM";
+
+            if(hou == 0){
+                hou = 12;
+            }
+            if(hou > 12){
+                hou= hou - 12;
+                pe = "PM";
+            }
+
+            Number.prototype.pad = function(digits){
+                for(var n = this.toString(); n.length < digits; n = 0 + n);
+                return n;
+            }
+
+            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            var ids = ["dayname", "month", "dayno", "year", "hour", "min", "sec", "period"];
+            var values = [week[dname], months[mo], dnum.pad(2), yr, hou.pad(2), min.pad(2), sec.pad(2), pe];
+            for(var i = 0; i < ids.length; i++)
+            document.getElementById(ids[i]).firstChild.nodeValue = values[i];
+    }
+
+    function initClock(){
+        updateClock();
+        window.setInterval("updateClock()", 1);
+    }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const inputs = document.querySelectorAll('#ID input');
+        inputs.forEach((input, index) => {
+            input.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    const nextInput = inputs[index + 1];
+                    if (nextInput) {
+                        nextInput.focus();
+                    }
+                    else{
+                        const button = document.querySelector('#ID button');
+                        if (button) {
+                            button.click();
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const inputs = document.querySelectorAll('#manual input');
+        inputs.forEach((input, index) => {
+            input.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    const nextInput = inputs[index + 1];
+                    if (nextInput) {
+                        nextInput.focus();
+                    }
+                    else{
+                        const button = document.querySelector('#manual button');
+                        if (button) {
+                            button.click();
+                            inputs[0].focus();
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener('keydown', (event) => {
+        if (event.key === "ArrowRight") {
+            generateReceipt();
+        }
+    });
+</script>
+</html>
